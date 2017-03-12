@@ -1,0 +1,30 @@
+[
+	{
+		"caption": "Review @",
+		"command": "review_file",
+		"args": {
+			"mark": "@"
+		}
+	},
+	{
+		"caption": "Review #",
+		"command": "review_file",
+		"args": {
+			"mark": "#"
+		}
+	},
+	{
+		"caption": "Review !",
+		"command": "review_file",
+		"args": {
+			"mark": "!"
+		}
+	},
+	{
+		"caption": "Review $",
+		"command": "review_file",
+		"args": {
+			"mark": "$"
+		}
+	},
+]

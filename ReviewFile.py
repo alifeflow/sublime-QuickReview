@@ -16,13 +16,46 @@ class review_fileCommand(sublime_plugin.WindowCommand):
 		output = ""
 
 		# Get contents to be parsed
-		lines = view.substr(sublime.Region(0, view.size()))
+		# lines = view.substr(sublime.Region(0, view.size()))
 
-		#parse the contents
-		m = re.findall("(.*)"+mark+"(\\S+)\\s+(.*)", lines)
-		for match in m:
-			sort_store(match[1], match[0]+match[2])
+		#Staging related
+		stagingKey = ""
+		stagingValue = ""
+		stagingLevel = -1
 
+		#The variables for tabbed contents parsing
+		levelTitle = dict()
+		currentLevel = 0
+
+		#Get contents line by line
+		regions = view.lines(sublime.Region(0, view.size()))
+		for region in regions:
+			line = view.substr(region)
+
+			#Get level
+			currentLevel = len(line)
+			line = line.lstrip("\t")
+			newLen = len(line)
+			if newLen == 0:
+				continue
+			currentLevel -= newLen
+			levelTitle[currentLevel] = line
+
+			for i in range(currentLevel):
+				line = levelTitle[i] + " " + line
+
+			#parse the contents
+			m = re.findall("(.*)"+mark+"(\\S+)\\s+(.*)", line)
+			for match in m:
+				if currentLevel <= stagingLevel:
+					sort_store(stagingKey, stagingValue)
+				stagingLevel = currentLevel
+				stagingValue = match[0]+match[2]
+				stagingKey = match[1]
+		#Add the last line
+		sort_store(stagingKey, stagingValue)
+
+		#Print the result dict
 		for key in mItems:
 			output = output + key + ":\n"+ mItems[key] + "\n"
 
